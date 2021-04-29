@@ -37,7 +37,6 @@ export default {
           return { name: name, power: power };
         },
       }).then((result) => {
-        console.log(result)
         const payload = { name: result.value.name, power: result.value.power };
         this.addPokemon(payload);
         this.getPokemons();

@@ -14,7 +14,9 @@
       <div class="col">
         <div class="row">
           <div class="col contend-btn">
-            <b-button pill variant="warning">Editar</b-button>
+            <b-button pill variant="warning" @click="update(item)"
+              >Editar</b-button
+            >
           </div>
           <div class="col contend-btn">
             <b-button pill variant="danger" @click="delet(item)"
@@ -36,7 +38,7 @@ export default {
     item: Object,
   },
   methods: {
-    ...mapActions("Pokemons", ["deletPokemon", "getPokemons"]),
+    ...mapActions("Pokemons", ["deletPokemon", "getPokemons", "updatePokemon"]),
     delet(item) {
       Swal.fire({
         title: "Estas seguro?",
@@ -52,6 +54,42 @@ export default {
           this.getPokemons();
           Swal.fire("Eliminado!", "El pekomon se ha eliminado.", "success");
         }
+      });
+    },
+    async update(item) {
+      await Swal.fire({
+        title: "Actulizar el pokemon",
+        html:
+          `<input id="name" value="${item.name}" class="swal2-input">` +
+          `<input id="power" value="${item.power}" type="number" class="swal2-input">`,
+        confirmButtonText: "Agregar",
+        focusConfirm: false,
+        preConfirm: () => {
+          const name = Swal.getPopup().querySelector("#name").value;
+          const power = Swal.getPopup().querySelector("#power").value;
+          if (!name || !power) {
+            Swal.showValidationMessage(`Por favor ingresar los datos`);
+          }
+          return { name: name, power: power };
+        },
+      }).then((result) => {
+        const payload = {
+          id: item._id,
+          name: result.value.name,
+          power: result.value.power,
+        };
+        this.updatePokemon(payload);
+        setTimeout(
+          function () {
+            this.getPokemons();
+          }.bind(this),
+          500
+        );
+        Swal.fire(
+          "Se ha actulizado!",
+          "El pekomon se ha actulizado.",
+          "success"
+        );
       });
     },
   },
