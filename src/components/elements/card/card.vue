@@ -62,7 +62,7 @@ export default {
         html:
           `<input id="name" value="${item.name}" class="swal2-input">` +
           `<input id="power" value="${item.power}" type="number" class="swal2-input">`,
-        confirmButtonText: "Agregar",
+        confirmButtonText: "Actulizar",
         focusConfirm: false,
         preConfirm: () => {
           const name = Swal.getPopup().querySelector("#name").value;
