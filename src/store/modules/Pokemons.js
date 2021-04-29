@@ -5,8 +5,6 @@ const state = {
   items: [],
   loading: { getItems: false },
   success: { getItems: undefined },
-  allPokemons: true,
-  favoritePokemons: false,
 };
 
 const getters = {
@@ -18,12 +16,6 @@ const getters = {
   },
   success: (state) => {
     return state.success;
-  },
-  allPokemons: (state) => {
-    return state.allPokemons;
-  },
-  favoritePokemons: (state) => {
-    return state.favoritePokemons;
   },
 };
 
@@ -44,42 +36,49 @@ const actions = {
   searchAllPokemons({ commit }) {
     commit("searchAllPokemons");
   },
-  searchFavoritePokemons({ commit }) {
-    commit("searchFavoritePokemons");
+  deletPokemon({ commit }, payload) {
+    try {
+      commit("loading", true);
+      console.log(payload);
+      Api.get(`pokemon/delete/${payload._id}`, async (functions) => {
+        const response = await functions;
+        if (response.status == 200) {
+          commit("loading", false);
+        }
+      });
+      commit("loading", false);
+    } catch (error) {
+      commit("loading", true);
+      setMessage("Error", "Ha sucedido un error en la transacción", "error");
+    }
   },
-  addFavorite({ commit }, payload) {
-    commit("addFavorite", payload);
+  addPokemon({ commit }, payload) {
+    console.log(payload)
+    try {
+      Api.post(payload, "pokemon/add", async (functions) => {
+        const resp = await functions;
+        if (resp.status == 200) {
+          commit("loading", false);
+        }
+      });
+    } catch (error) {
+      commit("loading", true);
+      setMessage("Error", "Ha sucedido un error en la transacción", "error");
+    }
   },
 };
 
 const mutations = {
-  searchFavoritePokemons(state) {
-    state.favoritePokemons = !state.favoritePokemons;
-    state.allPokemons = !state.allPokemons;
-  },
   searchAllPokemons(state) {
     state.allPokemons = !state.allPokemons;
     state.favoritePokemons = !state.favoritePokemons;
-  },
-  addFavorite(state, payload) {
-    state.items.find(function (item) {
-      if (item.name === payload) {
-        item.favorite = !item.favorite;
-      }
-    });
   },
   loading(state, data) {
     state.loading.getItems = data;
     state.success.getItems = !data;
   },
   getPokemonsResponse(state, data) {
-    console.log(data)
-    data.response.data.forEach((pokemon) => {
-      state.items.push({
-        name: pokemon.name,
-        favorite: false,
-      });
-    });
+    state.items = data.response.data;
   },
 };
 

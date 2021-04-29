@@ -2,29 +2,9 @@
   <div class="contend fixed-bottom">
     <div class="row">
       <div class="col all">
-        <b-button
-          pill
-          variant="danger"
-          id="all"
-          :class="allPokemons ? 'button-active' : 'button-disable'"
-          @click="seachAllPokemons()"
-        >
+        <b-button pill variant="success" @click="addPokemons()">
           <span> <img src="@/assets/all.svg" class="icon" alt="arrow" /></span>
-          Agregar Poekemon</b-button
-        >
-      </div>
-
-      <div class="col">
-        <b-button
-          pill
-          variant="danger"
-          :class="favoritePokemons ? 'button-active' : 'button-disable'"
-          @click="seachfavoritePokemons()"
-        >
-          <span>
-            <img src="@/assets/favorites.svg" class="icon" alt="arrow"
-          /></span>
-          Favorites</b-button
+          Agregar Pokemon</b-button
         >
       </div>
     </div>
@@ -32,18 +12,37 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
+import Swal from "sweetalert2";
 export default {
   name: "Filter",
   computed: {
     ...mapGetters("Pokemons", ["allPokemons", "favoritePokemons"]),
   },
   methods: {
-    seachfavoritePokemons() {
-      this.$store.dispatch("Pokemons/searchFavoritePokemons");
-    },
-    seachAllPokemons() {
-      this.$store.dispatch("Pokemons/searchAllPokemons");
+    ...mapActions("Pokemons", ["addPokemon", "getPokemons"]),
+    addPokemons() {
+      Swal.fire({
+        title: "Agregar un pokemon",
+        html: `<input type="text" id="name" class="swal2-input" placeholder="name">
+  <input type="number" id="power"  class="swal2-input" placeholder="power">`,
+        confirmButtonText: "Agregar",
+        focusConfirm: false,
+        preConfirm: () => {
+          const name = Swal.getPopup().querySelector("#name").value;
+          const power = Swal.getPopup().querySelector("#power").value;
+          if (!name || !power) {
+            Swal.showValidationMessage(`Por favor ingresar los datos`);
+          }
+          return { name: name, power: power };
+        },
+      }).then((result) => {
+        console.log(result)
+        const payload = { name: result.value.name, power: result.value.power };
+        this.addPokemon(payload);
+        this.getPokemons();
+        Swal.fire("Se ha agregado!", "El pekomon se ha agregado.", "success");
+      });
     },
   },
 };
@@ -61,32 +60,6 @@ export default {
   padding: 20px;
 }
 .all {
-  text-align: end;
-}
-.button-active {
-  width: 275px;
-  height: 44px;
-  left: 25.26%;
-  right: 50.87%;
-  top: calc(50% - 44px / 2);
-  background: #f22539;
-  border-radius: 60px;
-  font-size: 20px;
-  line-height: 22px;
-  align-items: center;
-}
-.button-disable {
-  width: 275px;
-  height: 44px;
-  left: 25.26%;
-  right: 50.87%;
-  top: calc(50% - 44px / 2);
-  background: #bfbfbf;
-  font-size: 20px;
-  border-radius: 60px;
-  color: #ffffff;
-  font-style: normal;
-  font-weight: bold;
-  border: 0px;
+  text-align: center;
 }
 </style>

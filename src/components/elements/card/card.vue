@@ -1,82 +1,83 @@
 <template>
-  <div class="card">
-    <div class="row" @click="showModal(item.name)">
+  <b-card class="card">
+    <div class="row">
       <div class="col">
-        <p class="name">{{ item.name }}</p>
+        <div class="row">
+          <div class="col">
+            <p class="p">Name: {{ item.name }}</p>
+          </div>
+          <div class="col">
+            <p class="p">Power: {{ item.power }}</p>
+          </div>
+        </div>
       </div>
-      <div class="col start">
-        <img
-          @click.stop="favorite(item.name)"
-          v-if="item.favorite"
-          src="@/assets/start-active.svg"
-          class="img-start"
-          alt="arrow"
-        />
-        <img
-          @click.stop="favorite(item.name)"
-          v-if="!item.favorite"
-          src="@/assets/start-disable.svg"
-          class="img-start"
-          alt="arrow"
-        />
+      <div class="col">
+        <div class="row">
+          <div class="col contend-btn">
+            <b-button pill variant="warning">Editar</b-button>
+          </div>
+          <div class="col contend-btn">
+            <b-button pill variant="danger" @click="delet(item)"
+              >Eliminar</b-button
+            >
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </b-card>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import Swal from "sweetalert2";
 export default {
   name: "card",
   props: {
     item: Object,
   },
   methods: {
-    ...mapActions("Pokemons", ["addFavorite"]),
-    favorite(name) {
-      this.addFavorite(name);
-    },
-    showModal(name) {
-      this.$refs[`${name}`].show();
+    ...mapActions("Pokemons", ["deletPokemon", "getPokemons"]),
+    delet(item) {
+      Swal.fire({
+        title: "Estas seguro?",
+        text: "No podrás revertir esto!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, bórralo!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.deletPokemon(item);
+          this.getPokemons();
+          Swal.fire("Eliminado!", "El pekomon se ha eliminado.", "success");
+        }
+      });
     },
   },
 };
 </script>
 
 <style scoped>
-.img-back {
-  background-image: url("../../../assets/imgfont.jpg");
-}
-.start {
+.button {
   text-align: end;
 }
-.img-start {
-  padding-right: 10px;
-  padding-top: 7px;
+.card-row {
+  padding-top: 10px;
+}
+.p {
+  padding-top: 10px;
+}
+.contend-btn {
+  padding-top: 5px;
+
+  text-align: center;
 }
 .card {
-  background: #ffffff;
-  border-radius: 5px;
-  height: 60px;
-  width: 100%;
-  left: 0px;
-  top: 0px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
-.name {
-  position: absolute;
-  left: 20px;
-  top: calc(50% - 26px / 2);
-  font-style: normal;
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 26px;
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
-  padding-top: 2px;
-
-  color: #353535;
+  min-width: 0;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
 }
 </style>

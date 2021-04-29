@@ -1,24 +1,24 @@
 <template>
   <div>
     <div>
-    <div class="row justify-content-md-center">
-      <div class="col-6">
-        <div class="form-group has-search">
-          <span class="form-control-feedback">
-            <img src="@/assets/lupa.svg" alt="arrow" />
-          </span>
-          <input
-            type="text"
-            class="form-control input"
-            v-model="searchInput"
-            placeholder="Search"
-          />
+      <div class="row contend-row">
+        <div class="col-6">
+          <div class="form-group has-search">
+            <span class="form-control-feedback">
+              <img src="@/assets/lupa.svg" alt="arrow" />
+            </span>
+            <input
+              type="text"
+              class="form-control input"
+              v-model="searchInput"
+              placeholder="Search"
+            />
+          </div>
         </div>
-      </div>
       </div>
     </div>
     <div v-if="searchPokemons.length > 0" class="contend-page">
-      <div class="row justify-content-md-center">
+      <div class="row contend-row">
         <div class="col-6">
           <div v-for="(data, i) in searchPokemons" :key="i">
             <Card :item="data" />
@@ -49,16 +49,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("Pokemons", ["items", "allPokemons", "favoritePokemons"]),
+    ...mapGetters("Pokemons", ["items", ]),
     searchPokemons() {
       if (this.searchInput.length > 3) {
         return this.searchPokemon(this.items, this.searchInput);
-      }
-      if (this.allPokemons) {
-        return this.items;
-      }
-      if (this.favoritePokemons) {
-        return this.searchFavoritePokemon(this.items);
       }
       return this.items;
     },
@@ -82,6 +76,9 @@ export default {
 <style scoped>
 .form-group {
   padding-top: 35px;
+}
+.contend-row {
+  justify-content: center;
 }
 .contend-page {
   padding-top: 40px;

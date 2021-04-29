@@ -3,8 +3,8 @@ import { apiUrl } from "../Config/Environments";
 axios.defaults.baseURL = apiUrl;
 
 export default {
-  get(dir, cb, errorCb) {
-    axios
+  async get(dir, cb, errorCb) {
+    await axios
       .get(apiUrl + dir)
       .then((r) => {
         cb(r);
@@ -24,11 +24,11 @@ export default {
         cb(r);
       })
       .catch((e) => {
-        errorCb(e)
+        errorCb(e);
       });
   },
-  put(payload, dir, cb, errorCb) {
-    axios
+  async put(payload, dir, cb, errorCb) {
+    await axios
       .put(apiUrl + dir, payload)
       .then((r) => {
         cb(r);
