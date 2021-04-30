@@ -25,10 +25,10 @@
           </div>
         </div>
       </div>
-      <Footer />
     </div>
     <div v-else class="contend-page"><Error msg="Uh-oh!" /></div>
-  </div>
+  <Footer />
+</div>
 </template>
 <script>
 import { mapGetters } from "vuex";
